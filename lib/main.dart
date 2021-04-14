@@ -149,38 +149,79 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     Image.file(
                       _image,
                       filterQuality: FilterQuality.medium,
+                      height: height / 2,
                     ),
                     SizedBox(
                       height: 20,
                     ),
-                    _output != null
+                    _output == [] || _output.isEmpty
                         ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Text(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        'Unable to detect the name of the car manufacturer',
+                        style:
+                        TextStyle(color: Colors.black, fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
+                    ) : _output != null
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
                               'The name of the car uploaded is ${_output[0]['label']}.',
-                              style: TextStyle(color: Colors.black, fontSize: 18),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 18),
                               textAlign: TextAlign.center,
                             ),
-                        )
+                          )
                         : Container(),
                     SizedBox(
                       height: 10,
                     ),
-                    _output != null
+                    _output == [] || _output.isEmpty
                         ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Text(
-                      'I\'m ${double.parse(_output[0]['confidence'].toStringAsFixed(4))  * 100}% accurate regarding the name of the car you uploaded.',
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                      textAlign: TextAlign.center,
-                    ),
-                        )
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        'Please try another image.',
+                        style:
+                        TextStyle(color: Colors.black, fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                        : _output != null
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              'I\'m ${double.parse(_output[0]['confidence'].toStringAsFixed(3)) * 100}% accurate regarding the name of the car you uploaded.',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                          )
                         : Container(),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          _output = null;
+                          _image = null;
+                          _loading = true;
+                        });
+                      },
+                      child: Text(
+                        'Close',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                      color: Colors.black,
+                    )
                   ],
                 ),
               ),
       ),
-      floatingActionButton: buildSpeedDial(),
+      floatingActionButton: _output != null ||
+        _image != null ||
+        _loading == false ? Container() : buildSpeedDial(),
     );
   }
 
@@ -215,14 +256,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
           backgroundColor: Colors.black,
           label: 'Camera',
-          labelStyle: TextStyle(fontSize: 16.0),
+          labelStyle: TextStyle(fontSize: 16.0, color: Colors.black),
           onTap: () => pickCameraImage(),
         ),
         SpeedDialChild(
           child: Icon(Icons.image_outlined, color: Colors.white),
           backgroundColor: Colors.black,
           label: 'Gallery',
-          labelStyle: TextStyle(fontSize: 16.0),
+          labelStyle: TextStyle(fontSize: 16.0, color: Colors.black),
           onTap: () => pickGalleryImage(),
         ),
       ],
